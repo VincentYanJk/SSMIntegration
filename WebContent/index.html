@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
+
+<html >
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script src="js/jquery-1.8.0.min.js"></script>
+    <script src="js/json3.min.js"></script>
+	<!-- <script src="jsV2/jsCommon/json3.min.js"></script> -->
+    <!--JS的地址可以写成下面这样，将来部署的时候，这些静态文件就可以单独部署了，不依赖于后台路径-->
+    <!--<script type="text/javascript" src="http://localhost:8080/sshdemo/static/js/jquery-1.7.2.min.js"></script>-->
+    <script type="text/javascript">
+    
+    var userList = function(){
+    	
+    	
+        var userName =$("#login_name").val();
+		var password=$("#login_password").val();
+		if(userName==''||userName.length<=0){
+			
+			return;
+		}
+		if(password==''||password.length<=0){
+			
+			return;
+		}
+		
+		var data = {userName:userName,password:password};
+            $.ajax({
+                url: "logoOn",//http://localhost:8080/sshdemo/hello/ajax
+                type: "POST",
+                dataType: "json",
+                contentType:"application/json",
+                data: JSON3.stringify(data),
+                async: false,
+                success: function(result) {
+                 if(result.status=="SUCCESS"){
+                  alert(result.msg);
+                  window.location.href='userList';
+                 }else{
+                	 alert(result.msg);
+                	 
+                 }
+
+                }
+              });
+            
+    }
+    
+    
+    </script>
+    
+  <script type="text/javascript">
+    $(function(){
+        $("#login_password1").blur(function(){
+          //  var $a = $(this);
+          
+        var name =$("#login_name").val();
+		var pwd=$("#login_password").val();
+		if(name==''||name.length<=0){
+			
+			return;
+		}
+		if(pwd==''||pwd.length<=0){
+			
+			return;
+		}
+		
+		var data = {name:name,pwd:pwd};
+            $.ajax({
+                url: "logoOn",//http://localhost:8080/sshdemo/hello/ajax
+                type: "POST",
+                dataType: "json",
+                contentType:"application/json",
+                data: JSON3.stringify(data),
+                async: false,
+                success: function(result) {
+                 if(result.code=="SUCCESS"){
+                  alert("success");
+                  window.location.href='userList';
+                 }else{
+                	 alert("error"); 
+                	 
+                 }
+
+                },
+                 error: function() {
+                 alert("error");
+                }
+              });
+        });
+    });
+</script>
+  </head>
+  <body>
+    <div>Hello World!</div>
+        <div class="username">
+			
+		UserName:<div><input type="text" id="login_name" ></div>
+		</div>
+		<div class="password">
+			
+		Password:<div><input id="login_password" type="password" ></div>
+		</div>
+    
+   <input type="button" id="login_name" value="Logo on" onclick="userList()" /> 
+  </body>
+</html>

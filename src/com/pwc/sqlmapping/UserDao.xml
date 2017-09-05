@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pwc.dao.UserDao">
+
+    <!-- User实体类、User表映射,注意实体类User和表名应该一致,字段下面可配置 -->
+	 <resultMap id="UserMap" type="com.pwc.pojo.User">
+		<result property="id" column="ID" />
+		<result property="userName" column="USER_NAME" />
+		<result property="password" column="PASSWORD" />
+		<result property="age" column="AGE" />
+	</resultMap> 
+
+	<sql id="dynamicUser">
+		<where>
+			<if test="id != 0">
+				and ID=#{id}
+			</if>
+			<if test="userName != null">
+				and USER_NAME=#{userName}
+			</if>
+			<if test="password != null">
+				and PASSWORD=#{password}
+			</if>
+		</where>
+	</sql>
+
+	<select id="selectUsers" parameterType="com.pwc.pojo.User" resultMap="UserMap">
+		select * from USER
+		<include refid="dynamicUser" />
+	</select>
+
+    <!-- 将UserDao中的方法进行配置，id=方法名称，parameterType=参数类型，resultMap返回的结果，当用户使用UserDao中的方法时，mybaties自己会找相应配置文件中的对数据库的操作 -->
+	<insert id="insert" parameterType="com.pwc.pojo.User">
+		INSERT INTO USER(
+		ID,
+		USER_NAME,
+		PASSWORD,
+		AGE
+		)
+		VALUES (
+		#{id},
+		#{userName},
+		#{password},
+		#{AGE}
+		)
+	</insert>
+	
+	<!-- 返回一个上面的 resultMap实例,这里的resultMap要与上面的配置的resultMap中的id一致-->
+	<select id="findById" resultMap="UserMap" >
+		SELECT * FROM USER
+	</select>
+	
+	
+    <select id="findAllUser" resultMap="UserMap" >
+		SELECT * FROM USER
+	</select>
+	
+	<!-- 删除信息 -->
+	<!--<delete id="delUser" parameterType="string">
+		DELETE FROM USER WHERE ID = #{id}
+	</delete>-->
+	
+
+	
+</mapper>

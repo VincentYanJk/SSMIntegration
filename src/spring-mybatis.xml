@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+       http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd
+       http://www.springframework.org/schema/tx 
+       http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+       http://www.springframework.org/schema/aop 
+       http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+    <context:annotation-config/>
+    <context:component-scan base-package="com.pwc.service.impl"/>
+    <!-- 读取配置文件 -->
+	<!-- <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="classpath:com/pwc/config/properties/jdbc.properties"/>
+	</bean> -->
+	
+	<!--  数据库连接池 -->
+		<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+       <!--  <property name="driverClass" value="${jdbc_driver}"/>
+        <property name="jdbcUrl" value="${jdbc_url}"/>
+        <property name="user" value="${jdbc_user}"/>
+        <property name="password" value="${jdbc_password}"/> -->
+        
+
+		 <property name="driverClass" value="com.mysql.jdbc.Driver" />
+		<property name="jdbcUrl" value="jdbc:mysql://localhost:3306/ssm?useUnicode=true&amp;characterEncoding=utf-8" />
+		<property name="user" value="root" />
+		<property name="password" value="admin" /> 
+	
+		<!-- pool sizing -->
+		<property name="initialPoolSize" value="20" />
+		<property name="minPoolSize" value="20" />
+		<property name="maxPoolSize" value="100" />
+		<property name="acquireIncrement" value="3" />
+		<property name="maxStatements" value="0" />
+		<!-- retries -->
+		<property name="acquireRetryAttempts" value="30" />
+		<property name="acquireRetryDelay" value="1000" /> <!-- 1s -->
+		<property name="breakAfterAcquireFailure" value="false" />
+		<!-- refreshing connections -->
+		<property name="maxIdleTime" value="180" /> <!-- 3min -->
+		<!-- <property name="maxConnectionAge" value="10" /> 1h -->
+		<!-- timeouts and testing
+		<property name="testConnectionOnCheckout" value="true" />
+		<property name="preferredTestQuery" value="SELECT 1" />
+        <property name="testConnectionOnCheckin" value="true" />
+         -->
+	</bean>
+<!--<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		
+		<property name="driverClassName">
+		   <value>${jdbc_driver}</value>
+		</property>
+		<property name="url">
+			<value>${jdbc_url}</value>
+		</property>
+		<property name="username">
+		    <value>${jdbc_user}</value>
+		</property>
+		<property name="password">
+		    <value>${jdbc_password}</value>
+		</property>
+		<property name="maxActive" value="100"></property>
+		<property name="maxIdle" value="30"></property>
+		<property name="maxWait" value="500"></property>
+		<property name="defaultAutoCommit" value="true"></property>
+	</bean>
+ -->
+	<!-- 
+	<tx:annotation-driven transaction-manager="transactionManager"/> -->
+	
+	
+			<!-- 配置事务管理 -->
+	<bean name="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
+		<!-- 配置SqlSessionFactory -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation" value="classpath:sqlMapConfig.xml"/>
+	</bean>
+
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">  
+        <constructor-arg index="0" ref="sqlSessionFactory"/>  
+    </bean>
+	
+	<!-- 配置所有DAO -->
+	<bean id="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="sqlSessionTemplate" ref="sqlSession" />
+		<property name="basePackage" value="com.pwc" />
+		<property name="annotationClass" value="org.springframework.stereotype.Repository"/>
+	</bean>
+	
+
+</beans>
