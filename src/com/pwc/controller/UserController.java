@@ -31,23 +31,11 @@ public class UserController {
 	
 	@RequestMapping(value="/userList")
     public String userList(HttpServletRequest request,Model model){  
-        //int userId = Integer.parseInt(request.getParameter("id"));  
-    //    System.out.println("userId:"+userId);
-		
-		//     if (userId==1) {
-		        
-//		             user = new User();  
-//		             user.setAge(11);
-//		             user.setId(1);
-//		             user.setPassword("123");
-//		             user.setUserName("jjjj");
-//        User user=null;
 
         List<User> users = userService.getAllUsers();
         
         
              model.addAttribute("users", users);
-     //   }
        
         return "UserList";  
     }  
